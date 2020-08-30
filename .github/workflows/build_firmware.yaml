@@ -1,0 +1,39 @@
+%YAML 1.1
+# ^-- ATTN: [2019-12-31] If you use a later version, Github will fail
+#     with a bogus error message "You have an error in your yaml syntax".
+# -*- coding: UTF-8, tab-width: 4 -*-
+---
+
+on:
+    push:
+        branches:
+            -   '*'
+
+    schedule:
+        -   cron:  '6 11 * * *'
+            # because 82h:66m = 3d 11h 6m
+
+jobs:
+    job_build_nodemcu_for_esp8266:
+        runs-on: ubuntu-latest
+        name: '[ESP8266] Make my WiFi+GPIO firmware image'
+        steps:
+            -   name: '[ESP8266] Check out the repo files'
+                # This example repo doesn't have any files that would be used,
+                # so this step is useless for the build.
+                # It's only here to show how you can do it in your fork.
+                uses: 'actions/checkout@v2'
+
+            -   name: '[ESP8266] Actually build the firmware'
+                uses: 'mk-pmb/nodemcu-firmware-build-as-github-action@experimental'
+                # with:
+                #     firmware_hotfix_cmd: 'source "$INGREDIENTS_REPO_DIR"/ci_hook_merge_firmware_repos.sh'
+                #     firmware_branch: 'dev'
+
+            -   name: '[ESP8266] Upload the firmware files as artifact'
+                uses: actions/upload-artifact@v1
+                with:
+                    name: esp8266_nodemcu_firmware
+                    path: results/
+
+...
