@@ -1,0 +1,25 @@
+{ "name": "nodemcu-firmware-wifigpio-pmb",
+  "version": "0.0.2",
+  "description": "A NodeMCU firmware image for GPIO via WiFi.",
+  "keywords": [
+    "gpio",
+    "nodemcu",
+    "wifi"
+  ],
+
+  "author": "M.K. (https://github.com/mk-pmb)",
+  "homepage": "https://github.com/mk-pmb/nodemcu-firmware-wifigpio-pmb/#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mk-pmb/nodemcu-firmware-wifigpio-pmb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mk-pmb/nodemcu-firmware-wifigpio-pmb/issues"
+  },
+  "contributors": [],
+
+  "private": true, "license": "MIT",
+
+
+  "engines": { "github": "*" }
+}
