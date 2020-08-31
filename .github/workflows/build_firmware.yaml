@@ -26,14 +26,15 @@ jobs:
 
             -   name: '[ESP8266] Actually build the firmware'
                 uses: 'mk-pmb/nodemcu-firmware-build-as-github-action@experimental'
-                # with:
+                with:
                 #     firmware_hotfix_cmd: 'source "$INGREDIENTS_REPO_DIR"/ci_hook_merge_firmware_repos.sh'
-                #     firmware_branch: 'dev'
+                    firmware_branch: 'dev'
+                    firmware_verify_license: 'results/nodemcu_license.txt'
 
             -   name: '[ESP8266] Upload the firmware files as artifact'
                 uses: actions/upload-artifact@v1
                 with:
-                    name: esp8266_nodemcu_firmware
+                    name: esp8266_wifigpio_firmware
                     path: results/
 
 ...

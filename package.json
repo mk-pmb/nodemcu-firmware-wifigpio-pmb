@@ -7,7 +7,7 @@
     "wifi"
   ],
 
-  "author": "M.K. (https://github.com/mk-pmb)",
+  "author": "Marcel Krause <mk+copyleft@pimpmybyte.de>",
   "homepage": "https://github.com/mk-pmb/nodemcu-firmware-wifigpio-pmb/#readme",
   "repository": {
     "type": "git",
