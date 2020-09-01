@@ -40,4 +40,30 @@ jobs:
                     name: esp8266_wifigpio_firmware
                     path: results/
 
+    job_build_nodemcu_for_esp32:
+        runs-on: ubuntu-latest
+        name: '[ESP32] Make my WiFi+GPIO firmware image'
+        steps:
+            -   name: '[ESP32] Check out the repo files'
+                # This example repo doesn't have any files that would be used,
+                # so this step is useless for the build.
+                # It's only here to show how you can do it in your fork.
+                uses: 'actions/checkout@v2'
+
+            -   name: '[ESP32] Actually build the firmware'
+                uses: 'mk-pmb/nodemcu-firmware-build-as-github-action@experimental'
+                with:
+                #     firmware_hotfix_cmd: 'source "$INGREDIENTS_REPO_DIR"/ci_hook_merge_firmware_repos.sh'
+                    firmware_repo: 'https://github.com/mk-pmb/nodemcu-firmware.git'
+                    firmware_branch: 'lua53-dev'
+                    firmware_verify_license: 'results/nodemcu_license.txt'
+                    build_custom_make_opts: >
+                        LUA=53
+
+            -   name: '[ESP32] Upload the firmware files as artifact'
+                uses: actions/upload-artifact@v1
+                with:
+                    name: esp32_wifigpio_firmware
+                    path: results/
+
 ...
