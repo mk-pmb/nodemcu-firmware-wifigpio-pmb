@@ -9,7 +9,7 @@ A NodeMCU firmware image for GPIO via WiFi.
 <!--/#echo -->
 
 
-Just a demo of how to use [nodemcu-build-as-github-action][nodemcu-baga].
+Just a demo of how to use [nodemcu-firmware-build-as-github-action][nodemcu-baga].
 
 
 
@@ -23,7 +23,7 @@ See [the tutorial repo][wifigpio-tutorial].
 &nbsp;
 
 
-  [nodemcu-baga]: https://github.com/mk-pmb/nodemcu-build-as-github-action/
+  [nodemcu-baga]: https://github.com/mk-pmb/nodemcu-firmware-build-as-github-action
   [wifigpio-tutorial]: https://github.com/mk-pmb/nodemcu-wifigpio-tutorial-pmb/
 
 
