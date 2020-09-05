@@ -15,6 +15,13 @@ function rebuild_and_upload_lfs () {
   local BFN="$(basename -- "$PWD")"
   local LFS="../$BFN.lfs"
   luac-for-nodemcu -f -o "$LFS" -- *.lua || return $?
+
+  local MAX=0 SIZE="$(stat -c %s -- "$LFS")"
+  [ -n "$SIZE" ] || return 3$(echo "E: unable to measure the LFS size" >&2)
+  let MAX="${MAXLFS_KB:-64} * 1024"
+  [ "$SIZE" -le "$MAX" ] || return 3$(
+    echo "E: LFS too big: $SIZE > $MAX bytes ($(($SIZE * 100 / $MAX))%)" >&2)
+
   [ -z "$UPTRANS" ] || ../../util/b64up.sh "$UPTRANS" "$LFS" || return $?
 }
 
