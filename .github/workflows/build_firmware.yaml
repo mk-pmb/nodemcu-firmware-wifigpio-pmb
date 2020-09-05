@@ -28,8 +28,8 @@ jobs:
                 uses: 'mk-pmb/nodemcu-firmware-build-as-github-action@experimental'
                 with:
                 #     firmware_hotfix_cmd: 'source "$INGREDIENTS_REPO_DIR"/ci_hook_merge_firmware_repos.sh'
-                    firmware_repo: 'https://github.com/mk-pmb/nodemcu-firmware.git'
-                    firmware_branch: 'lua53-dev'
+                #    firmware_repo: 'https://github.com/mk-pmb/nodemcu-firmware.git'
+                    firmware_branch: 'dev'
                     firmware_verify_license: 'results/nodemcu_license.txt'
                     build_custom_make_opts: >
                         LUA=53
