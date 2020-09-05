@@ -1,10 +1,10 @@
 ﻿
-WifiGPIO license
+WiFiGPIO license
 ----------------
 
 This recipe repo is provided under the MIT license:
 
-+++ Begin WifiGPIO license +++
++++ Begin WiFiGPIO license +++
 
 Copyright 2020 Marcel Krause <mk+copyleft@pimpmybyte.de>
 
@@ -26,7 +26,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
-+++ End of WifiGPIO license +++
++++ End of WiFiGPIO license +++
 
 
 
