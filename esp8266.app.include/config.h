@@ -6,8 +6,18 @@
 // ^-- A safe default. You can still re-configure it in init.lua.
 //     (My dev board seems to support 1'152'000 as well, i.e. 10x.)
 
-#define LUA_FLASH_STORE 0x10000
+//                            .---- ×  1 MiB
+//                            |.--- × 64 KiB
+//                            ||.-- ×  4 KiB
+//                        0x |||  .-- bytes
+#define LUA_FLASH_STORE   0x00030000
 // #define SPIFFS_MAX_FILESYSTEM_SIZE 0x40000
+
+//                                  .---- ×  1 MiB
+//                                  |.--- × 64 KiB
+//                                  ||.-- ×  4 KiB
+//                              0x  |||  .-- bytes
+#define SPIFFS_FIXED_LOCATION   0x00100000
 
 
 
