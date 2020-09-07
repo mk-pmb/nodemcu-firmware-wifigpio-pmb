@@ -25,9 +25,9 @@ function pt_calc () {
   for PRTN in "${PTBL[@]}"; do
     ADDR="${PRTN%% *}"; PRTN="${PRTN#* }"
     SIZE="${PRTN%% *}"; PRTN="${PRTN#* }"
-    pt_numfmt '+' $(( ADDR - USED )) '=@' "$ADDR" '+' "$SIZE"
+    pt_numfmt '+' $(( ADDR - USED )) '=@' "$ADDR"
     let USED="$ADDR + $SIZE"
-    pt_numfmt '=…' "$USED"
+    BLKSZ=1 pt_numfmt '+' "$SIZE" '=…' "$USED"
     echo "$PRTN"
   done
 }
@@ -66,7 +66,7 @@ function pt_preview_config_maxfw () {
   FLASH_SIZE="${FLASH_SIZE/%M/*1024K}"
   FLASH_SIZE="${FLASH_SIZE/%K/*1024}"
   let FLASH_SIZE="$FLASH_SIZE"
-  local SPIFFS_SIZE=$(( FLASH_SIZE - SPIFFS_ADDR ))
+  local SPIFFS_SIZE=$(( FLASH_SIZE - SPIFFS_ADDR - (4*1024) ))
   printf -v PRTN '"%s":%s, ' \
     firmware_addr 0 \
     firmware_size "$LFS_ADDR" \
