@@ -1,0 +1,6 @@
+# -*- coding: utf-8, tab-width: 2 -*-
+luamod:cohelper
+luamod:fifo
+luamod:fifo/fifosock
+luamod:http/httpserver
+luamod:telnet

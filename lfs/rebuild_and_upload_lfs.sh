@@ -9,15 +9,17 @@ function rebuild_and_upload_lfs () {
   local LFS_BFN="$(basename -- "$PWD")"
   cd .. || return $?
 
-  local FWSRC='../.git/@fwsrc'
+  local GITDIR="$(dirname -- "$PWD")/.git"
+  local FWSRC="$GITDIR/@fwsrc"
   [ -f "$FWSRC"/Makefile ] || return 3$(
     echo "E: Please make $FWSRC a symlink to your firmware source repo." >&2)
 
-  local BAGA='../.git/@baga'
+  local BAGA="$GITDIR/@baga"
   [ -f "$BAGA"/build.sh ] || return 3$(
     echo "E: Please make $BAGA a symlink to the BAGA repo." >&2)
 
-  INPUT_FIRMWARE_SRCDIR="$FWSRC" ./_prepare.sh || return $?
+  export INPUT_FIRMWARE_SRCDIR="$FWSRC"
+  ./_prepare.sh || return $?
   "$BAGA"/build.sh build_one_prepared_lfs_image "$LFS_BFN" || return $?
 
   local LFS_IMG="$LFS_BFN.lfs"
