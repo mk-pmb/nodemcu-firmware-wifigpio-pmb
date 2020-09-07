@@ -7,7 +7,7 @@ so for now I recommend you add a minimal `init.lua`:
 
 ```lua
 file.putcontents('init.lua',
-  "print('sysInit:', pcall(function () node.LFS.get('sysInit')() end))")
+  "print('sysInit:', pcall(function () return node.LFS.get('sysInit')() end))")
 ```
 
 The `sysInit` module will prepare some useful basics and schedule a
