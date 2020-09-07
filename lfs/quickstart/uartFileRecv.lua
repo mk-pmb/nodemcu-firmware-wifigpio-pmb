@@ -22,6 +22,7 @@ end
 function ufr.reinit()
   if ufr.fh then ufr.fh:close() end
   ufr.fh = nil
+  ufr.at = nil
   ufr.noisy = nil
 end
 
@@ -86,8 +87,14 @@ function ufr.parse(ln)
   ln = ufr.tryDecode(ln)
   if not ln then return end
   ufr.fh = ufr.fh or file.open(ufr.tmpfn, 'w')
-  ufr.fh.write(ln)
+  local fh, at = ufr.fh, (ufr.at or 0)
+  local ko = math.floor(at / 1024)
+  fh:write(ln)
   uart.write(0, '+')
+  at = at + ln:len()
+  ufr.at = at
+  local kn = math.floor(at / 1024)
+  if kn > ko then uart.write(0, ' '..tostring(kn)..'k ') end
   ufr.lateEol = '\r\n'
 end
 
