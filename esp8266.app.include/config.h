@@ -58,7 +58,7 @@
 #define ENDUSER_SETUP_AP_SSID "SetupNodeMCU"
 
 //#define I2C_MASTER_GPIO16_ENABLE
-#define I2C_MASTER_OLD_VERSION
+//#define I2C_MASTER_OLD_VERSION
 
 // *** Heareafter, there be demons ***
 
