@@ -25,7 +25,7 @@ function mr.lspt ()
   local output = {}
   local function human(x) return humanSz(x, '()') end
   for i, p in ipairs(parts) do
-    table.insert(output, ('%s @%x%s +%x%s'):format(p.name,
+    table.insert(output, ('%s @0x%x%s +0x%x%s'):format(p.name,
       p.addr, human(p.addr), p.size, human(p.size)))
   end
   table.sort(leftovers)
