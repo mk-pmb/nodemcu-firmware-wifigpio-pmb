@@ -1,7 +1,10 @@
 -- -*- coding: UTF-8, tab-width: 2 -*-
 
-local futil = require('libFileUtil')
-local tabu = require('libTableUtil')
+local modName = ...
+local modPfx = modName:match('^.+[%.%/]') or ''
+
+local futil = require(modPfx .. 'libFileUtil')
+local tabu = require(modPfx .. 'libTableUtil')
 
 local mr = {}
 local humanSz = futil.humanFlashSz
