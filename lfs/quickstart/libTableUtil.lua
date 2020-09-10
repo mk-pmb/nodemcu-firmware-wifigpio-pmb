@@ -78,4 +78,22 @@ function TU.keys(t)
 end
 
 
+function TU.longestPrefixKey(t, s)
+  local l, p
+  local m = 0
+  for k in pairs(t) do
+    l = k:len()
+    if l and (l > m) and (k == s:sub(0, l)) then m, p = l, k end
+  end
+  return p, t[p]
+end
+
+
+function TU.fallbackTable(t)
+  t = t or {}
+  function t.__index(_, k) return rawget(t, k) end
+  return t
+end
+
+
 return TU
