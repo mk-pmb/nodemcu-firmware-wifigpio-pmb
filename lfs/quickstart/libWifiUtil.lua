@@ -31,12 +31,21 @@ function wu.onGotIp(ev)
 end
 
 
+function wu.evMonReasonToName(r)
+  for k, v in pairs(wifi.eventmon.reason) do
+    if v == r then return k end
+  end
+  return nil
+end
+
+
 function wu.onDisconnect(ev)
   local maxRetries = wu.config.maxConnectRetries
   local disCnt = wu.disconCnt + 1
   wu.disconCnt = disCnt
-  print(('[wifi] Disconnected, retry #%s of max. %s'
-    ):format(ev.reason, disCnt, maxRetries), sjson.encode(ev))
+  print(('[wifi] Disconnected, reason: %s = %s, retry #%s of max. %s'
+    ):format(ev.reason, (wu.evMonReasonToName(ev.reason) or '?'),
+      disCnt, maxRetries), sjson.encode(ev))
 
   if wu.disconCnt <= maxRetries then
     print('[wifi] Will retry.')
