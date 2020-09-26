@@ -9,7 +9,7 @@ end)()
 
 timeUtil = require('libTimeUtil')
 tabu = require('libTableUtil')
-ufr = require('uartFileRecv')
+ufr = require('libUartFileRecv')
 dir = tabu.printDict
 
 futil = require('libFileUtil')
