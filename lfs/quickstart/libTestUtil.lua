@@ -34,7 +34,13 @@ function T.multi(condName)
     if nac < nex then
       error(('Too few actual results (%s < %s)'):format(nac, nex))
     elseif nac > nex then
-      error(('Too many actual results (%s > %s)'):format(nac, nex))
+      local msg = ''
+      for i, v in ipairs({table.unpack(lac, nex + 1)}) do
+        if msg ~= '' then msg = msg .. ', ' end
+        msg = msg .. T.quot(v)
+      end
+      msg = ('Too many actual results (%s > %s): %s'):format(nac, nex, msg)
+      error(msg)
     end
     local vac
     for k, vex in pairs(lex) do
