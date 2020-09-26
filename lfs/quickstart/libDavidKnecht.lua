@@ -9,17 +9,23 @@ local modName = ...
 local modPfx = modName:match('^.+[%.%/]') or ''
 
 local tabu = require(modPfx .. 'libTableUtil')
-local KN, JM
+local KN, JM, HND, tostr
 
-JM = tabu.fallbackTable()
+function tostr(x) return tostring(x or '¿') end
+
+JM = tabu.fallbackTable({
+  fin = function (job, ...) job.rsp:finish(...) end,
+})
+HND = {}
 KN = tabu.fallbackTable({
-  apiVersion = 2009260325,
+  apiVersion = 2009261300,
   jobMeta = JM,
+  hnd = HND,
 })
 
 
 function KN.log(kn, msg, ...)
-  print('[knecht:' .. tostring(kn.port or '(no port?!)') .. '] ' .. msg, ...)
+  print('[knecht:' .. tostr(kn.port) .. '] ' .. msg, ...)
 end
 
 
@@ -28,6 +34,7 @@ function KN.spawn(cfg)
   local kn = setmetatable({
     cfg = cfg,
     routesDict = (cfg.routesDict or {}),
+    hnd = (cfg.hnd or {}),
   }, KN)
   local port = (cfg.port or 80)
   kn.srv = (cfg.createHttpServer or require('httpserver').createServer
@@ -75,32 +82,52 @@ function KN.handle(job)
   local kn = job.kn
   kn:log(('%q %q ?%q | M:%0.2fk'):format(job.verb, subUrl,
     (job.rawQuery or ''), (node.heap() / 1024)))
-  local hndSpec
-  hndSpec, job.routedUrl, job.subUrl = kn:lookupHandler(job.routesDict,
+  job.hnd, job.routedUrl, job.subUrl = kn:lookupRoute(job.routesDict,
     job.verb, subUrl)
-  kn:wrap500(hndSpec, job)
+  kn:wrap500(job)
 end
 
 
-function KN.errUnsuppUrl(job)
-  job.rsp:finish(KN.simpleHtmlMsg('Not implemented.'), 501 )
+function HND.htmlMsg (job, arg)
+  job:fin(job.kn.simpleHtmlMsg(arg.msg or arg[2], arg.hint or arg[3]),
+    arg.st or arg[1])
 end
 
+function HND.staticText (job, arg)
+  job:fin(arg.tx or (table.concat(arg, '\r\n') .. '\r\n'), arg.st)
+end
 
-function KN.wrap500(kn, hndSpec, job)
-  local ok, err = pcall((hndSpec or kn.errUnsuppUrl), job)
+HND.errUnsuppUrl  = { hnd='htmlMsg', 501, 'Not implemented.' }
+HND.errNotFound   = { hnd='htmlMsg', 404, 'Not found.' }
+HND.robotsTxtNone = { hnd='staticText', 'User-agent: *', 'Disallow: /'}
+
+
+function KN.wrap500(kn, job)
+  local hnd = (job.hnd or 'errUnsuppUrl')
+  local arg = job.arg
+  if type(hnd) == 'string' then
+    arg = hnd
+    hnd = (kn.hnd[hnd] or KN.hnd[hnd])
+  end
+  if type(hnd) == 'table' then
+    arg = hnd
+    hnd = hnd.hnd
+    if type(hnd) == 'string' then hnd = (kn.hnd[hnd] or KN.hnd[hnd]) end
+  end
+  local ok, err = pcall((hnd or KN.errUnsuppUrl), job, arg)
   if ok then return end
-  kn:log(('%q %q..%q ?%q internal error:'):format(
-    tostring(job.verb or '¿'),
-    tostring(job.routedUrl or '¿'),
-    tostring(job.subUrl or '¿'),
-    tostring(job.rawQuery or '¿')
+  kn:log(('%q %q..%q ?%q -> %s internal error:'):format(
+    tostr(job.verb),
+    tostr(job.routedUrl),
+    tostr(job.subUrl),
+    tostr(job.rawQuery),
+    tostr(job.hnd)
     ), err)
-  job.rsp:finish(KN.simpleHtmlMsg('Internal Error.'), 500)
+  job:fin(job.kn.simpleHtmlMsg('Internal Error.'), 500)
 end
 
 
-function KN.lookupHandler(kn, routesDict, verb, subUrl)
+function KN.lookupRoute(kn, routesDict, verb, subUrl)
   -- returns: hndFunc, deepestRroutesDict, routedUrl, subUrl
   local rDict = (routesDict or kn.routesDict)
   local bestHnd
@@ -110,10 +137,8 @@ function KN.lookupHandler(kn, routesDict, verb, subUrl)
     local nxSub, nxUpto, nxPeek
     local nxHow, nxType
     while true do
-      --[[--
-        NB: Empty subUrl is no reason to skip, because we still have to
-            check for the verb handler.
-      --]]--
+      -- NB: Empty subUrl is no reason to skip: we still have to
+      -- check for the verb handler.
       if not rDict then return end
       bestHnd = (rDict[verb] or rDict['*'] or bestHnd)
       nxSub, nxUpto = subUrl:match('^/*(/[^/]*)()')
@@ -143,6 +168,7 @@ function KN.lookupHandler(kn, routesDict, verb, subUrl)
   end)()
   return bestHnd, rDict, routedUrl, subUrl
 end
+
 
 
 

@@ -6,7 +6,7 @@ wu = {
 }
 
 wu.config = {
-  maxConnectRetries = 2,
+  maxConnectRetries = 5,
 }
 
 
@@ -48,8 +48,11 @@ function wu.onDisconnect(ev)
       disCnt, maxRetries), sjson.encode(ev))
 
   if wu.disconCnt <= maxRetries then
-    print('[wifi] Will retry.')
-    if not wu.config.autoConnect then wifi.sta.connect() end
+    print('[wifi] Will retry very soon.')
+    if not wu.config.autoConnect then
+      tmr.create():alarm(2e3, tmr.ALARM_SINGLE,
+        function () wifi.sta.connect() end)
+    end
   else
     wifi.sta.disconnect()
     print('[wifi] Gave up.')
@@ -68,8 +71,8 @@ end)()
 function wu.connectToAp(cfg)
   if not cfg then return end
   wifi.setmode(wifi.STATION)
+  -- wifi.sta.disconnect()
   wu.disconCnt = 0
-
   if cfg.staticIp then
     wifi.sta.setip({
       ip=cfg.staticIp,

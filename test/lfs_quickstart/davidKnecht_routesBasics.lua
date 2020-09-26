@@ -26,23 +26,23 @@ rt = {
 }
 kn.routesDict = rt
 
-meq({kn:lookupHandler(nil, 'GET',   '/')},
-  {'webRoot',         rt['/'],      '/', ''})
+meq({kn:lookupRoute(nil,  'GET',  '/')},
+  {'webRoot',         rt['/'],    '/', ''})
 
-meq({kn:lookupHandler(nil, 'GET',   '/favicon.ico')},
-  {'randomFavi',      rt,           '/favicon.ico', ''})
+meq({kn:lookupRoute(nil,  'GET',  '/favicon.ico')},
+  {'randomFavi',      rt,         '/favicon.ico', ''})
 
-meq({kn:lookupHandler(nil, 'GET',   '/robots.txt')},
-  {'sendFile',        rt,   '',     '/robots.txt'})
+meq({kn:lookupRoute(nil,  'GET',  '/robots.txt')},
+  {'sendFile',        rt,   '',   '/robots.txt'})
 
-meq({kn:lookupHandler(nil, 'GET',   '/upload')},
-  {'dirRedir',        rt,           '/upload', ''})
+meq({kn:lookupRoute(nil,  'GET',  '/upload')},
+  {'dirRedir',        rt,         '/upload', ''})
 
-meq({kn:lookupHandler(nil, 'GET',   '/upload/secret.txt')},
-  {403,         rt['/upload/'],     '/upload/', '/secret.txt'})
+meq({kn:lookupRoute(nil,  'GET',  '/upload/secret.txt')},
+  {403,         rt['/upload/'],   '/upload/', '/secret.txt'})
 
-meq({kn:lookupHandler(nil, 'PUT',   '/upload/secret.txt')},
-  {'recvFile',  rt['/upload/'],     '/upload/', '/secret.txt'})
+meq({kn:lookupRoute(nil,  'PUT',  '/upload/secret.txt')},
+  {'recvFile',  rt['/upload/'],   '/upload/', '/secret.txt'})
 
 
 

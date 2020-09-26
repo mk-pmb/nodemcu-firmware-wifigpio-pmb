@@ -1,10 +1,10 @@
 -- -*- coding: UTF-8, tab-width: 2 -*-
 
-local TU = {
-  makePicker = function (p) return function(x) return x[p] end end,
-}
+local TU = {}
 
-local function compareKeys (a, b) return a.key < b.key end
+function TU.makePicker (p) return function(x) return x[p] end end
+function TU.strCmpKeys (a, b) return tostring(a.key) < tostring(b.key) end
+
 
 function TU.printDict(t, opt)
   if not opt then opt = {} end
@@ -53,7 +53,7 @@ function TU.pairsList(t, opt)
 
   local s = opt.sort
   if opt.mapBeforeSort then l = TU.map(l, opt.mapBeforeSort) end
-  if s == true then s = compareKeys end
+  if s == true then s = TU.strCmpKeys end
   if type(s) == 'function' then table.sort(l, s) end
   if opt.mapAfterSort then l = TU.map(l, opt.mapAfterSort) end
 
