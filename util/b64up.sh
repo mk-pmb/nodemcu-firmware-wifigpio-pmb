@@ -17,6 +17,7 @@ function b64up_main () {
   local OUTPIPE=()
 
   case "$TRANSPORT" in
+    func:* ) b64up_"${TRANSPORT#*:}" "$@"; return $?;;
     pipe ) OUTPIPE=( cat );;
     sc[0-9]* )
       MAX_WRAP=64
@@ -59,8 +60,23 @@ function b64up_encode_one_file () {
     *.lua ) b64up_encode_one_lua "$ORIG"; return $?;;
   esac
   local DEST="$(basename -- "$ORIG")"
-  echo ">> $ORIG -> $DEST >>" >&2
+  echo ">> $ORIG -> $DEST: $(b64up_measure_filesize "$ORIG") >>" >&2
   b64up_encode_one_file__core
+}
+
+
+function b64up_measure_filesize () {
+  local SZ=
+  case "$1" in
+    fake+size://* ) SZ="${1##*/}";;
+    * ) SZ="$(stat --format=%s -- "$1")";;
+  esac
+  [ -n "$SZ" ] || return 4
+  # lua <<<"k = $SZ / 1024; print(('%0.1f\t%0.8f'):format(k, k))"
+  (( SZ = ((SZ * 10) + 512) / 1024 ))
+  local KB="${SZ%[0-9]}"
+  SZ="${SZ#$KB}"
+  echo "${KB:-0}.${SZ}k"
 }
 
 
@@ -80,9 +96,10 @@ function b64up_encode_one_lua () {
   mkdir --parents -- "$LCC"
   local DEST="$BFN.lc"
 
-  echo ">> $ORIG -> ($LCC/) $DEST >>" >&2
+  echo -n ">> $ORIG -> ($LCC/) $DEST: " >&2
   luac-for-nodemcu -o "$LCC/$DEST" -- "$ORIG" || return $?$(
     echo "E: failed to compile $ORIG" >&2)
+  echo "$(b64up_measure_filesize "$LCC/$DEST") >>" >&2
 
   ORIG="$LCC/$DEST" b64up_encode_one_file__core || return $?
 }
@@ -91,9 +108,10 @@ function b64up_encode_one_lua () {
 function b64up_encode_lfs () {
   local DEST='combined_lfs_.img'
 
-  echo ">> lfs/*.lua -> $DEST >>" >&2
+  echo -n ">> lfs/*.lua -> $DEST: " >&2
   luac-for-nodemcu -o "$DEST" -f -- lfs/*.lua || return $?$(
     echo "E: failed to compile $DEST" >&2)
+  echo "$(b64up_measure_filesize "$DEST") >>" >&2
 
   ORIG="$DEST" b64up_encode_one_file__core || return $?
 }
