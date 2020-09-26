@@ -24,6 +24,13 @@ function ufr.reinit()
   ufr.fh = nil
   ufr.at = nil
   ufr.noisy = nil
+  collectgarbage('collect')
+end
+
+function ufr.rmtmp(why)
+  file.remove(ufr.tmpfn)
+  ufr.log('del %q (%s)', ufr.tmpfn, why)
+  ufr.reinit()
 end
 
 function ufr.save(fn)
@@ -31,24 +38,43 @@ function ufr.save(fn)
     (ufr.noisy and 'noisy') or
     nil)
   ufr.reinit()
-  if err then
-    file.remove(ufr.tmpfn)
-    return ufr.log('del %q (%s)', ufr.tmpfn, err)
-  end
-  if (fn or '') == '' then
-    file.remove(ufr.tmpfn)
-    return ufr.log('del %q (requested)', ufr.tmpfn)
-  end
+  if err then return ufr.rmtmp(err) end
+  local fx = {}
+  fn = fn:gsub('[%?%&](%w+)=([^%?%&]*)', function(k, v) fx[k] = v return '' end)
+  if (fn or '') == '' then return ufr.rmtmp('requested') end
+  if not ufr.cksum(fn, fx.cksum) then return ufr.rmtmp('bad content') end
+
+  ufr.log('ren %q -> %q', ufr.tmpfn, fn)
   file.remove(fn)
   if not file.rename(ufr.tmpfn, fn) then
     return ufr.log('FAILED to rename %q -> %q!', ufr.tmpfn, fn)
   end
-  ufr.log('ren %q -> %q', ufr.tmpfn, fn)
-  local err, hash = pcall(function ()
-    return encoder.toHex(crypto.fhash('sha1', fn))
-  end)
-  ufr.log('%s checksum: %s', fn, hash)
+
+  if fx.fx == 'reLFS' then
+    ufr.log('Reload the LFS:')
+    print(pcall(node.LFS.reload, fn))
+    return
+  end
+
   ufr.refine(fn)
+end
+
+function ufr.cksum(destfn, want)
+  local err, hash = pcall(function ()
+    return encoder.toHex(crypto.fhash('sha1', ufr.tmpfn))
+  end)
+  want = (want or '')
+  if want == '' then
+    want = 'ign'
+  elseif want == hash then
+    want = 'ok'
+  else
+    ufr.log('E: expected cksum %s *%s', want, destfn)
+    destfn = ufr.tmpfn
+    want = false
+  end
+  ufr.log('checksum (%s): %s *%s', (want or 'WRONG'), hash, destfn)
+  return want
 end
 
 function ufr.refine(fn)

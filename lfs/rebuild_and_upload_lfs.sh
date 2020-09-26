@@ -29,7 +29,8 @@ function rebuild_and_upload_lfs () {
   [ "$SIZE" -le "$MAX" ] || return 3$(
     echo "E: LFS too big: $SIZE > $MAX bytes ($(($SIZE * 100 / $MAX))%)" >&2)
 
-  [ -z "$UPTRANS" ] || ../util/b64up.sh "$UPTRANS" "$LFS_IMG" || return $?
+  [ -z "$UPTRANS" ] || ../util/b64up.sh "$UPTRANS" \
+    "$LFS_IMG?fx=reLFS" || return $?
 }
 
 

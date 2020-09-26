@@ -46,7 +46,6 @@ function b64up_main () {
 function b64up_encode_these_files () {
   local ORIG=
   for ORIG in "$@"; do
-    [ -s "$ORIG" ] || continue
     b64up_encode_one_file "$ORIG" || return $?
   done
 }
@@ -54,13 +53,18 @@ function b64up_encode_these_files () {
 
 function b64up_encode_one_file () {
   local ORIG="$1"
+  local QRYFX=
+  if [[ "$ORIG" == *'?'* ]]; then
+    QRYFX="?${ORIG#*\?}"
+    ORIG="${ORIG%%\?*}"
+  fi
   ORIG="${ORIG%/}"
   case "$ORIG" in
     lfs ) b64up_encode_lfs; return $?;;
     *.lua ) b64up_encode_one_lua "$ORIG"; return $?;;
   esac
   local DEST="$(basename -- "$ORIG")"
-  echo ">> $ORIG -> $DEST: $(b64up_measure_filesize "$ORIG") >>" >&2
+  echo ">> $ORIG -> $DEST$QRYFX: $(b64up_measure_filesize "$ORIG") >>" >&2
   b64up_encode_one_file__core
 }
 
@@ -81,11 +85,13 @@ function b64up_measure_filesize () {
 
 
 function b64up_encode_one_file__core () {
+  local HASH="$(sha1sum --binary -- "$ORIG")"
+  HASH="${HASH%% *}"
   echo
   echo '>'
   base64 --wrap="$WRAP" -- "$ORIG" || return 3$(
     echo "E: failed to encode $ORIG" >&2)
-  echo ">$DEST"
+  echo ">$DEST?cksum=$HASH${QRYFX/#\?/&}"
 }
 
 
@@ -113,7 +119,7 @@ function b64up_encode_lfs () {
     echo "E: failed to compile $DEST" >&2)
   echo "$(b64up_measure_filesize "$DEST") >>" >&2
 
-  ORIG="$DEST" b64up_encode_one_file__core || return $?
+  ORIG="$DEST" QRYFX='?fx=reLFS' b64up_encode_one_file__core || return $?
 }
 
 
