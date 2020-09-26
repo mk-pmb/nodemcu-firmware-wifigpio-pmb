@@ -2,5 +2,4 @@
 luamod:cohelper
 luamod:fifo
 luamod:fifo/fifosock
-luamod:http/httpserver
 luamod:telnet

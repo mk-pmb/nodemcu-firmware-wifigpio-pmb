@@ -16,11 +16,9 @@ function tostr(x) return tostring(x or '¿') end
 JM = tabu.fallbackTable({
   fin = function (job, ...) job.rsp:finish(...) end,
 })
-HND = {}
 KN = tabu.fallbackTable({
-  apiVersion = 2009261300,
   jobMeta = JM,
-  hnd = HND,
+  hnd = {},
 })
 
 
@@ -81,25 +79,28 @@ function KN.handle(job)
   end
   local kn = job.kn
   kn:log(('%q %q ?%q | M:%0.2fk'):format(job.verb, subUrl,
-    (job.rawQuery or ''), (node.heap() / 1024)))
+    tostr(job.rawQuery), (node.heap() / 1024)))
   job.hnd, job.routedUrl, job.subUrl = kn:lookupRoute(job.routesDict,
     job.verb, subUrl)
   kn:wrap500(job)
 end
 
 
-function HND.htmlMsg (job, arg)
+function KN.hnd.htmlMsg (job, arg)
+  job.rsp:send('', arg.st or arg[1])
+  job.rsp:send_header('Content-Type', 'text/html; charset=UTF-8')
   job:fin(job.kn.simpleHtmlMsg(arg.msg or arg[2], arg.hint or arg[3]),
     arg.st or arg[1])
 end
 
-function HND.staticText (job, arg)
+function KN.hnd.staticText (job, arg)
+  job.rsp:send_header('Content-Type', 'text/plain; charset=UTF-8')
   job:fin(arg.tx or (table.concat(arg, '\r\n') .. '\r\n'), arg.st)
 end
 
-HND.errUnsuppUrl  = { hnd='htmlMsg', 501, 'Not implemented.' }
-HND.errNotFound   = { hnd='htmlMsg', 404, 'Not found.' }
-HND.robotsTxtNone = { hnd='staticText', 'User-agent: *', 'Disallow: /'}
+KN.hnd.errUnsuppUrl   = { hnd='htmlMsg', 501, 'Not implemented.' }
+KN.hnd.errNotFound    = { hnd='htmlMsg', 404, 'Not found.' }
+KN.hnd.robotsTxtNone  = { hnd='staticText', 'User-agent: *', 'Disallow: /'}
 
 
 function KN.wrap500(kn, job)
