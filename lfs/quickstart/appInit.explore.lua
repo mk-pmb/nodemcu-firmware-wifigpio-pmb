@@ -19,11 +19,14 @@ require('libFlashMemoryReport').du()
 cfg = (require('cfg_basics') or {})
 if cfg.wifi then require('libWifiUtil').connectToAp(cfg.wifi) end
 
-KN = require('libDavidKnecht')
-knSrv = (knSrv or KN.spawn(cfg.knecht))
-knRt = knSrv.routesDict
-knDav = {}
-knRt['/dav/'] = knDav
+pcall(function () KN = require('libDavidKnecht') end)
+if KN then
+  KN = pcall(require, 'libDavidKnecht')
+  knSrv = (knSrv or KN.spawn(cfg.knecht))
+  knRt = knSrv.routesDict
+  knDav = {}
+  knRt['/dav/'] = knDav
+end
 
 
 
