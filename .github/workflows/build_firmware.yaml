@@ -31,9 +31,9 @@ jobs:
                 #    firmware_repo: 'https://github.com/mk-pmb/nodemcu-firmware.git'
                     firmware_branch: 'dev'
                     firmware_verify_license: 'results/nodemcu_license.txt'
-                    firmware_apply_patches: >
-                        fw-commit:6691b84
-                        fw-commit:85f3df8
+                    # firmware_apply_patches: >
+                    #     fw-commit:6691b84
+                    #     fw-commit:85f3df8
                     build_custom_make_opts: >
                         LUA=53
 
