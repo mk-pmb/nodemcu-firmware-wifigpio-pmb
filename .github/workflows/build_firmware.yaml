@@ -19,9 +19,6 @@ jobs:
         name: '[ESP8266] Make my WiFi+GPIO firmware image'
         steps:
             -   name: '[ESP8266] Check out the repo files'
-                # This example repo doesn't have any files that would be used,
-                # so this step is useless for the build.
-                # It's only here to show how you can do it in your fork.
                 uses: 'actions/checkout@v2'
 
             -   name: '[ESP8266] Actually build the firmware'
@@ -48,9 +45,6 @@ jobs:
 #        name: '[ESP32] Make my WiFi+GPIO firmware image'
 #        steps:
 #            -   name: '[ESP32] Check out the repo files'
-#                # This example repo doesn't have any files that would be used,
-#                # so this step is useless for the build.
-#                # It's only here to show how you can do it in your fork.
 #                uses: 'actions/checkout@v2'
 #
 #            -   name: '[ESP32] Actually build the firmware'
