@@ -14,8 +14,18 @@ on:
             # because 82h:66m = 3d 11h 6m
 
 jobs:
+    job_check_lua_files:
+        runs-on: ubuntu-20.04
+        name: 'Check LUA files'
+        steps:
+            -   name: '[LUA] Check out the repo files'
+                uses: 'actions/checkout@v2'
+
+            -   name: '[LUA] Contemn stray globals'
+                uses: 'mk-pmb/ghaction-lua-contemn-stray-globals@experimental'
+
     job_build_nodemcu_for_esp8266:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         name: '[ESP8266] Make my WiFi+GPIO firmware image'
         steps:
             -   name: '[ESP8266] Check out the repo files'
@@ -41,7 +51,7 @@ jobs:
                     path: results/
 
 #    job_build_nodemcu_for_esp32:
-#        runs-on: ubuntu-latest
+#        runs-on: ubuntu-20.04
 #        name: '[ESP32] Make my WiFi+GPIO firmware image'
 #        steps:
 #            -   name: '[ESP32] Check out the repo files'
