@@ -71,7 +71,7 @@ function TU.map(t, f) return TU.mapInto({}, t, f) end
 function TU.keys(t)
   return TU.pairsList(t, {
     -- We can always sort without regard for original key order,
-    -- because Lua doesn't preserve key order to begin with.
+    -- because Lua does not preserve key order to begin with.
     sort=true,
     mapAfterSort=TU.makePicker('key'),
   })
