@@ -157,7 +157,6 @@ function KN.lookupRoute(kn, routesDict, verb, subUrl)
       if not nxHow then return end
       routedUrl = routedUrl .. nxSub
       subUrl = subUrl:sub(nxUpto)
-      subUrlStart = nxUpto
       nxType = type(nxHow)
       if nxType == 'table' then
         rDict = nxHow

@@ -1,0 +1,13 @@
+# -*- coding: utf-8, tab-width: 2 -*-
+CFG[ignored_globals]+='
+  crypto
+  encoder
+  file
+  gpio
+  i2c
+  node
+  sjson
+  tmr
+  uart
+  wifi
+  '

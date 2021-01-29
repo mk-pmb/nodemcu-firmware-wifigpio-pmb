@@ -15,7 +15,7 @@ Hint: Some motors have a limit on how far they can rotate with
 
 
 
-function pwmLinearServo(cfg)
+local function pwmLinearServo(cfg)
   local pin = cfg.io_pin
   gpio.mode(pin, gpio.OUTPUT, gpio.PULLUP)
   local cycle = cfg.pwm_cycle_msec * 1e3

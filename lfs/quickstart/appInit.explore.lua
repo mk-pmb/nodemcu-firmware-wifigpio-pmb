@@ -1,4 +1,5 @@
 -- -*- coding: utf-8, tab-width: 2, lfs: no -*-
+-- lua-find-globals:ignore: *
 
 (function () -- I²C setup
   busId   = 0

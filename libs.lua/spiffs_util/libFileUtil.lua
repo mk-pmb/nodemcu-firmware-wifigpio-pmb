@@ -7,7 +7,7 @@ local tabu = require(modulePrefix .. 'libTableUtil')
 
 local futil = {}
 
-function floatUnit(x, u)
+local function floatUnit(x, u)
   x = ('%0.2f'):format(x)
   x = (x:match('^(.+)%.0*$') or x)
   return x .. (u or '')
